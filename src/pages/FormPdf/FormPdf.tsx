@@ -1,26 +1,78 @@
 import { useState } from "react";
 import { Button } from "../../components/Button/Button";
 import type { User } from "../../models/User";
+import { PDFDocument, rgb } from "pdf-lib";
+import pdfBase from "/assets/consentimiento-informado-tatuajes-piercing.pdf";
+// import nodemailer from "nodemailer";
 
 type UserWithImage = User & {
     image?: File;
 };
 
+async function generatePdf(formData: User) {
+    const existingPdfBytes = await fetch(pdfBase).then((res) => res.arrayBuffer());
+
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+
+    const fontSize = 10;
+
+    firstPage.drawText(`${formData.nombre}`, { x: 90, y: 585, size: fontSize, color: rgb(0, 0, 0) });      
+    firstPage.drawText(`${formData.edad}`, { x: 500, y: 585, size: fontSize });                              
+
+    firstPage.drawText(`${formData.nameTutor}`, { x: 155, y: 573, size: fontSize });                         
+    firstPage.drawText(`${formData.ageTutor}`, { x: 500, y: 573, size: fontSize });                          
+
+    firstPage.drawText(`${formData.direccion}`, { x: 90, y: 560, size: fontSize });                          
+
+    firstPage.drawText(`${formData.poblacion}`, { x: 90, y: 550, size: fontSize });                          
+    firstPage.drawText(`${formData.codPostal}`, { x: 320, y: 550, size: fontSize });                         
+    firstPage.drawText(`${formData.provincia}`, { x: 360, y: 560, size: fontSize });                        
+
+    firstPage.drawText(`${formData.telefonoFijo}`, { x: 90, y: 545, size: fontSize });                      
+    firstPage.drawText(`${formData.movil}`, { x: 260, y: 545, size: fontSize });                             
+    firstPage.drawText(`${formData.fechaNacimiento}`, { x: 445, y: 535, size: fontSize });   
+    // firstPage.drawText(`${formData.image}`, { x: 445, y: 545, size: fontSize });   
+
+    const pdfBytes = await pdfDoc.save();
+    return new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
+}
+
+async function downloadPdf(formData: User) {
+  const pdfBlob = await generatePdf(formData);
+  const url = URL.createObjectURL(pdfBlob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "consentimiento_impala_prueba.pdf";
+  link.click();
+
+  URL.revokeObjectURL(url);
+};
+
+// const transporter = nodemailer.createTransport({
+//     service: "gmail", // o SMTP de tu proveedor
+//     auth: { user: "email@gmail.com", pass: "pass" },
+// });
+
 export default function FormPdf() {
     const [formData, setFormData] = useState<User>({
-    nombre: "",
-    apellidos: "",
-    email: "",
-    edad: 0,
-    address: "",
-    nameTutor: "",
-    ageTutor: 0,
-    poblacion: "",
-    provincia: "",
-    telefonoFijo: 0,
-    movil: 0,
-    fechaNacimiento: "",
-    image: undefined
+        nombre: "",
+        apellidos: "",
+        email: "",
+        edad: 0,
+        direccion: "",
+        nameTutor: "",
+        ageTutor: 0,
+        poblacion: "",
+        codPostal: 0,
+        provincia: "",
+        telefonoFijo: 0,
+        movil: 0,
+        fechaNacimiento: "",
+        nif: "",
+        image: undefined
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,17 +84,19 @@ export default function FormPdf() {
     }));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const requiredFields: (keyof User)[] = [
             "nombre",
             "apellidos",
             "email",
             "edad",
-            "address",
+            "direccion",
             "poblacion",
             "provincia",
             "movil",
             "fechaNacimiento",
+            "image",
+            "nif"
         ];
 
         const emptyFields = requiredFields.filter((field) => {
@@ -53,7 +107,19 @@ export default function FormPdf() {
             alert(`Faltan estos campos obligatorios: ${emptyFields.join(", ")}`);
             return;
         }
-        console.log("Usuario:", formData);
+
+        await downloadPdf(formData)
+
+        // const pdfBlob = await generatePdf(formData);
+        // const arrayBuffer = await pdfBlob.arrayBuffer();
+        // const buffer = Buffer.from(arrayBuffer);
+        // transporter.sendMail({
+        //     from: "email@gmail.com",
+        //     to: "email@gmail.com",
+        //     subject: "Formulario con PDF",
+        //     text: "Adjunto el formulario en PDF",
+        //     attachments: [{ filename: "consentimiento_impala_prueba.pdf", content: buffer }],
+        // });
     };
 
 
@@ -97,11 +163,21 @@ export default function FormPdf() {
                 />
                 </div>
                 <div className="col-12">
-                <label htmlFor="lastName">DNI/NIE</label>
+                <label htmlFor="age">DNI/NIE</label>
                 <input
-                    type="file"
+                    type="text"
                     id="nif"
                     name="nif"
+                    value={formData.nif}
+                    onChange={handleChange}
+                />
+                </div>
+                <div className="col-12">
+                <label htmlFor="lastName">DNI/NIE (foto)</label>
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
                     accept="image/*"
                     onChange={(e) => {
                     const file = e.target.files?.[0];
@@ -125,12 +201,22 @@ export default function FormPdf() {
                 />
                 </div>
                 <div className="col-12">
-                <label htmlFor="address">Dirección</label>
+                <label htmlFor="direccion">Dirección</label>
                 <input
                     type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
+                    id="direccion"
+                    name="direccion"
+                    value={formData.direccion}
+                    onChange={handleChange}
+                />
+                </div>
+                <div className="col-12">
+                <label htmlFor="cp">C.P</label>
+                <input
+                    type="number"
+                    id="cp"
+                    name="cp"
+                    value={formData.codPostal}
                     onChange={handleChange}
                 />
                 </div>
