@@ -28,11 +28,11 @@ async function generatePdf(formData: User) {
 
     firstPage.drawText(`${formData.poblacion}`, { x: 90, y: 550, size: fontSize });                          
     firstPage.drawText(`${formData.codPostal}`, { x: 320, y: 550, size: fontSize });                         
-    firstPage.drawText(`${formData.provincia}`, { x: 360, y: 560, size: fontSize });                        
+    firstPage.drawText(`${formData.provincia}`, { x: 380, y: 550, size: fontSize });                        
 
-    firstPage.drawText(`${formData.telefonoFijo}`, { x: 90, y: 545, size: fontSize });                      
-    firstPage.drawText(`${formData.movil}`, { x: 260, y: 545, size: fontSize });                             
-    firstPage.drawText(`${formData.fechaNacimiento}`, { x: 445, y: 535, size: fontSize });   
+    firstPage.drawText(`${formData.telefonoFijo}`, { x: 90, y: 539, size: fontSize });                      
+    firstPage.drawText(`${formData.movil}`, { x: 260, y: 539, size: fontSize });                             
+    firstPage.drawText(`${new Date(formData.fechaNacimiento).toLocaleDateString()}`, { x: 445, y: 538, size: fontSize });   
     // firstPage.drawText(`${formData.image}`, { x: 445, y: 545, size: fontSize });   
 
     const pdfBytes = await pdfDoc.save();
