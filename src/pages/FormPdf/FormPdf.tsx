@@ -43,27 +43,31 @@ async function generatePdf(formData: Cliente, formDataTatuador: Tatuador) {
             image = await pdfDoc.embedJpg(imageBytes);
         }
 
-        const scaled = image.scale(0.13);
+        const MAX_WIDTH = 150;
+        const MAX_HEIGHT = 150;
+
+        const widthScale = MAX_WIDTH / image.width;
+        const heightScale = MAX_HEIGHT / image.height;
+        const scale = Math.min(widthScale, heightScale);
 
         firstPage.drawImage(image, {
-            x: 340, 
-            y: 630, 
-            width: scaled.width,
-            height: scaled.height,
+            x: 330,
+            y: 630,
+            width: image.width * scale,
+            height: image.height * scale,
         });
     }
 
     const secondPage = pages[1];
 
-    secondPage.drawText(`${formDataTatuador.tecnica}`, { x: 90, y: 430, size: fontSize, color: rgb(0, 0, 0) });
-    secondPage.drawText(`${formDataTatuador.zona}`, { x: 385, y: 430, size: fontSize, color: rgb(0, 0, 0) });
+    secondPage.drawText(`${formDataTatuador.tecnica ?? ""}`, { x: 90, y: 430, size: fontSize, color: rgb(0, 0, 0) });
+    secondPage.drawText(`${formDataTatuador.zona ?? ""}`, { x: 385, y: 430, size: fontSize, color: rgb(0, 0, 0) });
 
 
-    secondPage.drawText(`${formDataTatuador.color}`, { x: 250, y: 385, size: fontSize, color: rgb(0, 0, 0) });
-    secondPage.drawText(`${formDataTatuador.marca}`, { x: 70, y: 385, size: fontSize, color: rgb(0, 0, 0) });
-    secondPage.drawText(`${formDataTatuador.lote}`, { x: 380, y: 385, size: fontSize, color: rgb(0, 0, 0) });
-    secondPage.drawText(`${new Date(formDataTatuador.fechaCaducidad).toLocaleDateString()}`, { x: 500, y: 385, size: fontSize, color: rgb(0, 0, 0) });
-
+    secondPage.drawText(`${formDataTatuador.color ?? ""}`, { x: 250, y: 385, size: fontSize, color: rgb(0, 0, 0) });
+    secondPage.drawText(`${formDataTatuador.marca ?? ""}`, { x: 70, y: 385, size: fontSize, color: rgb(0, 0, 0) });
+    secondPage.drawText(`${formDataTatuador.lote ?? ""}`, { x: 380, y: 385, size: fontSize, color: rgb(0, 0, 0) });
+    secondPage.drawText(`${formDataTatuador.fechaCaducidad != '' ? new Date(formDataTatuador.fechaCaducidad).toLocaleDateString() : ""}`, { x: 500, y: 385, size: fontSize, color: rgb(0, 0, 0) });
 
     secondPage.drawText(`${formData.nif}`, { x: 90, y: 125, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText(`${formData.nombre} ` + `${formData.apellidos}`, { x: 365, y: 125, size: fontSize, color: rgb(0, 0, 0) });
@@ -291,6 +295,7 @@ export default function FormPdf() {
                 id="image"
                 name="image"
                 accept="image/*"
+                capture="environment"
                 onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
