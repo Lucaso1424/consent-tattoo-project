@@ -173,8 +173,6 @@ export default function FormPdf() {
         navigate('/');
     };
 
-    const [redes, setRedes] = useState<string[]>([]);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target; 
 
