@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Cliente } from "../../models/Cliente";
 import { PDFDocument, rgb } from "pdf-lib";
-import pdfBase from "/assets/consentimiento-informado-tatuajes-piercing.pdf";
+import pdfBase from "/assets/consentimiento-informado-tatuajes-piercing-final.pdf";
 import { useNavigate } from "react-router-dom";
 import type { Tatuador } from "../../models/Tatuador";
 import { Box, VStack, HStack, Input, Heading, Button, Text } from "@chakra-ui/react";
@@ -63,7 +63,6 @@ async function generatePdf(formData: Cliente, formDataTatuador: Tatuador) {
     secondPage.drawText(`${formDataTatuador.tecnica ?? ""}`, { x: 90, y: 430, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText(`${formDataTatuador.zona ?? ""}`, { x: 385, y: 430, size: fontSize, color: rgb(0, 0, 0) });
 
-
     secondPage.drawText(`${formDataTatuador.color ?? ""}`, { x: 250, y: 385, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText(`${formDataTatuador.marca ?? ""}`, { x: 70, y: 385, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText(`${formDataTatuador.lote ?? ""}`, { x: 380, y: 385, size: fontSize, color: rgb(0, 0, 0) });
@@ -78,6 +77,38 @@ async function generatePdf(formData: Cliente, formDataTatuador: Tatuador) {
     secondPage.drawText(today.getDate().toString(), { x: 365, y: 195, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText((today.getMonth() + 1).toString(), { x: 400, y: 195, size: fontSize, color: rgb(0, 0, 0) });
     secondPage.drawText(today.getFullYear().toString(), { x: 500, y: 195, size: fontSize, color: rgb(0, 0, 0) });
+
+    const thirdPage = pages[2];
+
+    thirdPage.drawText(`${formDataTatuador.tecnica ?? ""}`, { x: 131, y: 285, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.zona ?? ""}`, { x: 240, y: 285, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.diseño ?? ""}`, { x: 342, y: 285, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.nombreAplicador ?? ""}`, { x: 185, y: 275, size: fontSize, color: rgb(0, 0, 0) });
+
+    thirdPage.drawText(`${formDataTatuador.marca ?? ""}`, { x: 131, y: 250, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.color ?? ""}`, { x: 220, y: 250, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.lote ?? ""}`, { x: 290, y: 250, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.fechaCaducidad != '' ? new Date(formDataTatuador.fechaCaducidad).toLocaleDateString() : ""}`, { x: 420, y: 250, size: fontSize, color: rgb(0, 0, 0) });
+    
+    thirdPage.drawText(`${formDataTatuador.redSocial ?? ""}`, { x: 358, y: 100, size: fontSize, color: rgb(0, 0, 0) });
+
+    thirdPage.drawText(today.getDate().toString(), { x: 248, y: 75, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText((today.getMonth() + 1).toString(), { x: 280, y: 75, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(today.getFullYear().toString(), { x: 315, y: 75, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formData.nif}`, { x: 223, y: 55, size: fontSize, color: rgb(0, 0, 0) });
+    thirdPage.drawText(`${formDataTatuador.nifTatuador}`, { x: 422, y: 30, size: fontSize, color: rgb(0, 0, 0) });
+
+    const fourthPage = pages[3];
+
+    fourthPage.drawText(`${formData.nombre} ` + `${formData.apellidos}`, { x: 175, y: 190, size: fontSize, color: rgb(0, 0, 0) });
+    fourthPage.drawText(`${formData.nif}`, { x: 486, y: 185, size: 8, color: rgb(0, 0, 0) });
+
+    fourthPage.drawText(`${formData.nameTutor}`, { x: 175, y: 160, size: fontSize, color: rgb(0, 0, 0) });
+    fourthPage.drawText(`${formData.nifTutor}`, { x: 486, y: 165, size: 8, color: rgb(0, 0, 0) });
+
+    fourthPage.drawText(today.getDate().toString(), { x: 96, y: 73, size: fontSize, color: rgb(0, 0, 0) });
+    fourthPage.drawText((today.getMonth() + 1).toString(), { x: 187, y: 73, size: fontSize, color: rgb(0, 0, 0) });
+    fourthPage.drawText(today.getFullYear().toString(), { x: 264.5, y: 73, size: fontSize, color: rgb(0, 0, 0) });
 
     const pdfBytes = await pdfDoc.save();
     return new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
@@ -113,6 +144,7 @@ export default function FormPdf() {
         direccion: "",
         nameTutor: "",
         ageTutor: undefined,
+        nifTutor: '',
         poblacion: "",
         codPostal: undefined,
         provincia: "",
@@ -125,17 +157,23 @@ export default function FormPdf() {
 
     const [formDataTatuador, setFormDataTatuador] = useState<Tatuador>({
         nombreTatuador: '',
+        nifTatuador: '',
         tecnica: '',
         zona: '',
         lote: undefined,
         fechaCaducidad: '',
-        marca: ''
+        marca: '',
+        diseño: '',
+        nombreAplicador: '',
+        redSocial: ''
     });
 
     const navigate = useNavigate();
     const goToHome = () => {
         navigate('/');
     };
+
+    const [redes, setRedes] = useState<string[]>([]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target; 
@@ -196,7 +234,8 @@ export default function FormPdf() {
         }
 
         const requiredTatuadorFields: (keyof Tatuador)[] = [
-            "nombreTatuador"
+            'nombreTatuador',
+            'nifTatuador'
         ];
 
         const emptyTatuadorFields = requiredTatuadorFields.filter((field) => {
@@ -307,6 +346,18 @@ export default function FormPdf() {
                 }}
             />
             </Box>
+            
+            <Box>
+            <Text fontWeight="bold">Fecha de nacimiento</Text>
+            <Input
+                type="date"
+                id="fechaNacimiento"
+                name="fechaNacimiento"
+                value={formData.fechaNacimiento}
+                onChange={handleChange}
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
 
             <Box>
             <Text fontWeight="bold">Email</Text>
@@ -317,6 +368,19 @@ export default function FormPdf() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email"
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
+            <Box>
+            <Text fontWeight="bold">Móvil</Text>
+            <Input
+                type="number"
+                id="movil"
+                name="movil"
+                value={formData.movil}
+                onChange={handleChange}
+                placeholder="Móvil"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
@@ -334,36 +398,7 @@ export default function FormPdf() {
             />
             </Box>
 
-            <Heading as="h3" size="sm" mt={6} mb={4} color="purple.500">
-            Datos del tutor
-            </Heading>
-
-            <Box>
-            <Text fontWeight="bold">Padre/Madre tutor/a de:</Text>
-            <Input
-                type="text"
-                id="nameTutor"
-                name="nameTutor"
-                value={formData.nameTutor}
-                onChange={handleChange}
-                placeholder="Nombre del tutor"
-                _focus={{ borderColor: "teal.400" }}
-            />
-            </Box>
-
-            <Box>
-            <Text fontWeight="bold">Edad de Padre/Madre tutor/a:</Text>
-            <Input
-                type="number"
-                id="ageTutor"
-                name="ageTutor"
-                value={formData.ageTutor ?? ""}
-                onChange={handleChange}
-                placeholder="Edad"
-                _focus={{ borderColor: "teal.400" }}
-            />
-            </Box>
-
+            
             <Box>
             <Text fontWeight="bold">C.P</Text>
             <Input
@@ -416,30 +451,49 @@ export default function FormPdf() {
             />
             </Box>
 
+            <Heading as="h3" size="sm" mt={6} mb={4} color="purple.500">
+            Datos del tutor
+            </Heading>
+
             <Box>
-            <Text fontWeight="bold">Móvil</Text>
+            <Text fontWeight="bold">Padre/Madre tutor/a de:</Text>
             <Input
-                type="number"
-                id="movil"
-                name="movil"
-                value={formData.movil}
+                type="text"
+                id="nameTutor"
+                name="nameTutor"
+                value={formData.nameTutor}
                 onChange={handleChange}
-                placeholder="Móvil"
+                placeholder="Nombre del tutor"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
 
             <Box>
-            <Text fontWeight="bold">Fecha de nacimiento</Text>
+            <Text fontWeight="bold">Edad de Padre/Madre tutor/a:</Text>
             <Input
-                type="date"
-                id="fechaNacimiento"
-                name="fechaNacimiento"
-                value={formData.fechaNacimiento}
+                type="number"
+                id="ageTutor"
+                name="ageTutor"
+                value={formData.ageTutor ?? ""}
                 onChange={handleChange}
+                placeholder="Edad"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
+
+            <Box>
+            <Text fontWeight="bold">NIF/NIE de Padre/Madre tutor/a:</Text>
+            <Input
+                type="string"
+                id="nifTutor"
+                name="nifTutor"
+                value={formData.nifTutor ?? ""}
+                onChange={handleChange}
+                placeholder="NIF/NIE Tutor Legal"
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
         </VStack>
         </Box>
 
@@ -457,6 +511,19 @@ export default function FormPdf() {
                 value={formDataTatuador.nombreTatuador}
                 onChange={handleChangeTatuador}
                 placeholder="Nombre del tatuador"
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
+            <Box>
+            <Text fontWeight="bold">NIF Tatuador</Text>
+            <Input
+                type="text"
+                id="nifTatuador"
+                name="nifTatuador"
+                value={formDataTatuador.nifTatuador}
+                onChange={handleChangeTatuador}
+                placeholder="NIF del tatuador"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
@@ -483,6 +550,19 @@ export default function FormPdf() {
                 value={formDataTatuador.zona}
                 onChange={handleChangeTatuador}
                 placeholder="Zona"
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
+            <Box>
+            <Text fontWeight="bold">Diseño</Text>
+            <Input
+                type="text"
+                id="diseño"
+                name="diseño"
+                value={formDataTatuador.diseño}
+                onChange={handleChangeTatuador}
+                placeholder="Diseño"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
@@ -527,6 +607,19 @@ export default function FormPdf() {
             </Box>
 
             <Box>
+            <Text fontWeight="bold">Nombre aplicador</Text>
+            <Input
+                type="text"
+                id="nombreAplicador"
+                name="nombreAplicador"
+                value={formDataTatuador.nombreAplicador}
+                onChange={handleChangeTatuador}
+                placeholder="Nombre aplicador"
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
+            <Box>
             <Text fontWeight="bold">Fecha de caducidad</Text>
             <Input
                 type="date"
@@ -534,6 +627,19 @@ export default function FormPdf() {
                 name="fechaCaducidad"
                 value={formDataTatuador.fechaCaducidad}
                 onChange={handleChangeTatuador}
+                _focus={{ borderColor: "teal.400" }}
+            />
+            </Box>
+
+            <Box>
+            <Text fontWeight="bold">¿Cómo nos conociste?</Text>
+            <Input
+                type="text"
+                id="redSocial"
+                name="redSocial"
+                value={formDataTatuador.redSocial}
+                onChange={handleChangeTatuador}
+                placeholder="¿Cómo nos conociste?"
                 _focus={{ borderColor: "teal.400" }}
             />
             </Box>
