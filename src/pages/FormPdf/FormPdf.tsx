@@ -51,8 +51,8 @@ async function generatePdf(formData: Cliente, formDataTatuador: Tatuador) {
         const scale = Math.min(widthScale, heightScale);
 
         firstPage.drawImage(image, {
-            x: 330,
-            y: 630,
+            x: 360,
+            y: 620,
             width: image.width * scale,
             height: image.height * scale,
         });
