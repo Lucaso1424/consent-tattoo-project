@@ -174,7 +174,7 @@ export default function FormPdf() {
         });
         console.log(emptyFields)
         if (emptyFields.length > 0) {
-            toast.error(`Faltan estos campos obligatorios del tatuador: ${emptyFields.join(", ")}`, {
+            toast.error(`Faltan estos campos obligatorios del cliente: ${emptyFields.join(", ")}`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
