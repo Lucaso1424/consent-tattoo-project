@@ -8,6 +8,7 @@ export class Cliente {
     direccion: string;
     nameTutor?: string;
     ageTutor?: string;
+    nifTutor?: string;
     poblacion: string;
     provincia: string;
     codPostal?: string;
