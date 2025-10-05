@@ -109,15 +109,15 @@ export class Utils {
             const imageUint8 = Uint8Array.from(atob(imageBytes), c => c.charCodeAt(0));
             const pngImage = await pdfDoc.embedPng(imageUint8);
 
-            const MAX_WIDTH = 150;
-            const MAX_HEIGHT = 150;
+            const MAX_WIDTH = 100; 
+            const MAX_HEIGHT = 50;  
     
             const widthScale = MAX_WIDTH / pngImage.width;
             const heightScale = MAX_HEIGHT / pngImage.height;
-            const scale = Math.min(widthScale, heightScale);
+            const scale = Math.min(widthScale, heightScale) * 0.8;
 
             secondPage.drawImage(pngImage, {
-                x: 380,
+                x: 430,
                 y: 150,
                 width: pngImage.width * scale,
                 height: pngImage.height * scale,
@@ -132,7 +132,7 @@ export class Utils {
             });
 
             fourthPage.drawImage(pngImage, {
-                x: 410,
+                x: 450,
                 y: 100,
                 width: pngImage.width * scale,
                 height: pngImage.height * scale,

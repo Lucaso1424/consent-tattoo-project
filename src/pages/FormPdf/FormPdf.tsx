@@ -156,8 +156,13 @@ export default function FormPdf() {
         border: "1px solid #000",
         borderRadius: "4px",
         width: "100%",
+        minWidth: "280px",
+        maxWidth: "600px",
         height: "200px",
-        backgroundColor: "white"
+        backgroundColor: "white",
+        touchAction: "none",
+        margin: "0 auto",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
     };
     const canvasRef = useRef<CanvasDraw>(null);
 
