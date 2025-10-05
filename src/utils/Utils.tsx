@@ -100,6 +100,10 @@ export class Utils {
     
         fourthPage.drawText(`${formData.nombre} ` + `${formData.apellidos}`, { x: 175, y: 190, size: fontSize, color: rgb(0, 0, 0) });
         fourthPage.drawText(`${formData.nif}`, { x: 486, y: 185, size: 8, color: rgb(0, 0, 0) });
+
+        fourthPage.drawText(`X`, { x: 56, y: 336, size: 8, color: rgb(0, 0, 0) });
+        fourthPage.drawText(`X`, { x: 56, y: 305, size: 8, color: rgb(0, 0, 0) });
+        fourthPage.drawText(`X`, { x: 56, y: 274, size: 8, color: rgb(0, 0, 0) });
     
         fourthPage.drawText(`${formData.nameTutor}`, { x: 175, y: 160, size: fontSize, color: rgb(0, 0, 0) });
         fourthPage.drawText(`${formData.nifTutor}`, { x: 486, y: 165, size: 8, color: rgb(0, 0, 0) });
