@@ -14,7 +14,8 @@ export class Cliente {
     codPostal?: string;
     telefonoFijo?: number;
     movil?: number;
-    fotoDni?: File
+    fotoDni?: File;
+    firma: string;
 
     constructor(data: any) {
         this.nombre = data.nombre; 
@@ -31,5 +32,6 @@ export class Cliente {
         this.codPostal = data.codPostal; 
         this.telefonoFijo = data.telefonoFijo; 
         this.movil = data.movil; 
+        this.firma = data.firma;
     }
 }
